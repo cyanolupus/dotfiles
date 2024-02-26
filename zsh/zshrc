@@ -33,7 +33,7 @@ if [[ $? -ne 0 ]]; then
 fi
 
 if [[ -n $SSH_CONNECTION ]]; then
-    exec $TMUXPATH
+    exec $TMUXPATH new-session
 fi
 
 FZFPATH=$(which fzf)

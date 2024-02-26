@@ -1,10 +1,10 @@
 #! /bin/sh
 
-function backup_and_install () {
+backup_and_install () {
     mkdir -p $(dirname $2)
-    if [ -a $2 ]; then
-        if [ ! -L $2 ]; then
-            if [ -a $2.bak ]; then
+    if test -e $2; then
+        if test ! -L $2 ; then
+            if test -e $2.bak; then
                 mv $2.bak $2.$(date +%Y%m%d%H%M%S).bak
             fi
             mv $2 $2.bak
@@ -13,7 +13,7 @@ function backup_and_install () {
         fi
     fi
     ln -s $1 $2
-    if [ $? -eq 0 ]; then
+    if test $? -eq 0; then
         echo "Created symlink $2 -> $1"
     fi
 }
@@ -21,7 +21,8 @@ function backup_and_install () {
 # get the installer directory
 INSRALLER_DIR=$(dirname $(readlink -f $0))
 
-IFS=$'\n'
+IFS='
+'
 for dot in $(cat $INSRALLER_DIR/dots); do
     SRC_PATH=$(echo $dot | awk '{ print $1 }')
     DST_PATH=$(echo $dot | awk '{ print $2 }')

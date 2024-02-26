@@ -8,7 +8,7 @@ set platform (uname -s)
 if test $platform = "Darwin"
     set brew_path (ls /opt/homebrew/bin/brew 2> /dev/null)
     if test $status = 0
-        eval "$($brew_path shellenv)"
+        eval ($brew_path shellenv)
     end
 
     set pip3_path (which pip3)
