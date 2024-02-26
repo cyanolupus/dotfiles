@@ -2,6 +2,8 @@ if status is-interactive
     # Commands to run in interactive sessions can go here
 end
 
+set -g fish_greeting
+
 set platform (uname -s)
 if test $platform = "Darwin"
     set brew_path (ls /opt/homebrew/bin/brew 2> /dev/null)

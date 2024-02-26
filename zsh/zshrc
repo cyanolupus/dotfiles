@@ -1,0 +1,89 @@
+OS=$(uname -s)
+
+BREW_PATH=$(ls /opt/homebrew/bin/brew 2> /dev/null)
+if [[ ! $? -ne 0 ]]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
+
+FISHPATH=$(which fish)
+if [[ $? -ne 0 ]]; then
+	echo "fish not found"
+	exec /bin/zsh -f
+fi
+
+if [[ -n $TMUX || ! $- == *l* ]]; then
+    exec $FISHPATH
+fi
+
+if [[ "$OS" = "Darwin" ]]; then
+	GREPPATH=$(which ggrep)
+else
+	GREPPATH=$(which grep)
+fi
+
+if [[ $? -ne 0 ]]; then
+	echo "GNU grep not found"
+	exec $FISHPATH
+fi
+
+TMUXPATH=$(which tmux)
+if [[ $? -ne 0 ]]; then
+	echo "tmux not found"
+	exec $FISHPATH
+fi
+
+if [[ -n $SSH_CONNECTION ]]; then
+    exec $TMUXPATH
+fi
+
+FZFPATH=$(which fzf)
+if [[ $? -ne 0 ]]; then
+	echo "fzf not found"
+	exec $FISHPATH
+fi
+
+create_new_session="Create New Session"
+ssh_remote_server="Remote Sessions"
+plain_session="Plain Session"
+
+OPTIONS="${create_new_session}\n${ssh_remote_server}\n$($TMUXPATH list-sessions)\n"
+ID="$(echo $OPTIONS | $FZFPATH | cut -d: -f1)"
+
+if [[ "$ID" = "${create_new_session}" ]]; then
+    exec $TMUXPATH new-session
+fi
+
+if [[ "$ID" = "${ssh_remote_server}" ]]; then
+    REMOTESERVERS="$(cat ~/.ssh/config | $GREPPATH -oP '(?<=Host\ )[A-Z0-9a-z]+(?=\ #hasTmux)')"
+    REMOTESERVER="$(echo $REMOTESERVERS | $FZFPATH)"
+
+    SSHPATH=$(which ssh)
+    if [[ $? -ne 0 ]]; then
+        echo "ssh not found"
+        exec $FISHPATH
+    fi
+
+    REMOTETMUXPATH=$($SSHPATH $REMOTESERVER which tmux)
+    if [[ $? -ne 0 ]]; then
+        exec $SSHPATH $REMOTESERVER
+    fi
+
+    REMOTEID="$($SSHPATH $REMOTESERVER $REMOTETMUXPATH list-sessions)"
+    if [[ -z "$REMOTEID" ]]; then
+        exec $SSHPATH $REMOTESERVER -t $REMOTETMUXPATH new-session
+    fi
+    REMOTEID="$REMOTEID\n${create_new_session}"
+    REMOTEID="$(echo $REMOTEID | $FZFPATH | cut -d: -f1)"
+
+    if [[ "$REMOTEID" = "${create_new_session}" ]]; then
+        exec $SSHPATH $REMOTESERVER -t $REMOTETMUXPATH new-session
+    elif [[ -n "$REMOTEID" ]]; then
+        exec $SSHPATH $REMOTESERVER -t $REMOTETMUXPATH attach-session -t "$REMOTEID"
+    else
+        exec $SSHPATH $REMOTESERVER
+    fi
+fi
+
+if [[ -n "$ID" ]]; then
+    exec $TMUXPATH attach-session -t "$ID"
+fi

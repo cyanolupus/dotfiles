@@ -4,6 +4,9 @@ function backup_and_install () {
     mkdir -p $(dirname $2)
     if [ -a $2 ]; then
         if [ ! -L $2 ]; then
+            if [ -a $2.bak ]; then
+                mv $2.bak $2.$(date +%Y%m%d%H%M%S).bak
+            fi
             mv $2 $2.bak
         else
             rm $2
