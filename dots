@@ -3,3 +3,4 @@ $INSRALLER_DIR/fish/config.fish $HOME/.config/fish/config.fish
 $INSRALLER_DIR/fish/functions $HOME/.config/fish/functions
 $INSRALLER_DIR/git $HOME/.config/git
 $INSRALLER_DIR/tmux/tmux.conf $HOME/.config/tmux/tmux.conf
+$INSRALLER_DIR/ssh/config $HOME/.ssh/config

@@ -1,6 +1,7 @@
 #! /bin/sh
 
 function backup_and_install () {
+    mkdir -p $(dirname $2)
     if [ -a $2 ]; then
         if [ ! -L $2 ]; then
             mv $2 $2.bak

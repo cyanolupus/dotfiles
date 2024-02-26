@@ -1,0 +1,13 @@
+# Host cfexample #hasTmux
+#     HostName ssh-cfexample.domain.example
+#     ProxyCommand cloudflared access ssh --hostname %h
+
+Host github.com
+    user git
+    hostname github.com
+    IdentityFile ~/.ssh/git_ed25519
+
+Host *
+    ServerAliveInterval 60
+    TCPKeepAlive yes
+    port 22
