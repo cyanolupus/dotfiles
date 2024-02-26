@@ -4,7 +4,7 @@ end
 
 set platform (uname -s)
 if test $platform = "Darwin"
-    set brew_path (ls /opt/homebrew/bin/brew)
+    set brew_path (ls /opt/homebrew/bin/brew 2> /dev/null)
     if test $status = 0
         eval "$($brew_path shellenv)"
     end
@@ -18,17 +18,17 @@ if test $platform = "Darwin"
     bind "[1;2D" backward-word
 end
 
-set cargo_path (ls $HOME/.cargo/bin)
+set cargo_path (ls $HOME/.cargo/bin 2> /dev/null)
 if test $status = 0
     export PATH="$cargo_path:$PATH"
 end
 
-set deno_path (ls $HOME/.deno/bin)
+set deno_path (ls $HOME/.deno/bin 2> /dev/null)
 if test $status = 0
     export PATH="$deno_path:$PATH"
 end
 
-set go_path (ls $HOME/go/bin)
+set go_path (ls $HOME/go/bin 2> /dev/null)
 if test $status = 0
     export PATH="$go_path:$PATH"
 end
