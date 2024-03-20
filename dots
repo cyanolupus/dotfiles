@@ -4,6 +4,7 @@ $INSRALLER_DIR/fish/functions $HOME/.config/fish/functions
 $INSRALLER_DIR/git $HOME/.config/git
 $INSRALLER_DIR/tmux/tmux.conf $HOME/.config/tmux/tmux.conf
 $INSRALLER_DIR/ssh/config $HOME/.ssh/config
+$INSRALLER_DIR/bash/bashrc $HOME/.bashrc
 $INSRALLER_DIR/zsh/zshrc $HOME/.zshrc
 $INSRALLER_DIR/zsh/zprofile $HOME/.zprofile
 $INSRALLER_DIR/sh/profile $HOME/.profile
